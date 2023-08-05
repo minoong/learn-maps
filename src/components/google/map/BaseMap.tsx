@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useRef } from "react";
-import { googleMapAtom } from "../../stores/atoms";
+import { googleMapAtom } from "../../../stores/atoms";
 import { useSetAtom } from "jotai";
 import { GoogleMap } from "@react-google-maps/api";
-import { GOOGLE_MAPS } from "../../constants/googleMaps";
+import { GOOGLE_MAPS } from "../../../constants/googleMaps";
 
 interface Props extends Omit<GoogleMap["props"], "onLoad" | "onUnmount"> {
   onLoadCallback?: (map: google.maps.Map) => void;
@@ -18,6 +18,7 @@ function BaseMap(props: Props) {
     onLoadCallback,
     onUnmountCallback,
     center,
+    children,
     ...rest
   } = props;
   const setGoogleMap = useSetAtom(googleMapAtom);
@@ -53,7 +54,9 @@ function BaseMap(props: Props) {
       onLoad={onLoadFn}
       onUnmount={onUnmountFn}
       {...rest}
-    ></GoogleMap>
+    >
+      {children}
+    </GoogleMap>
   );
 }
 

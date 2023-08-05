@@ -17,7 +17,10 @@ function Layout() {
                   component={RouteLink}
                   to={item.toLocaleLowerCase().replace(" ", "-")}
                   key={item}
-                  sx={{ color: "#fff", pr: 5 }}
+                  sx={{
+                    color: "#fff",
+                    pr: 5,
+                  }}
                 >
                   {item}
                 </Link>

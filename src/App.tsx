@@ -4,6 +4,8 @@ import Layout from "./layout";
 import { Typography } from "@mui/material";
 import GoogleMap from "./pages/google-map";
 import Mapbox from "./pages/mapbox";
+import GoogleMapHeatmap from "./pages/google-map-heatmap";
+import GoogleMapClear from "./pages/google-map-clear";
 
 const router = createBrowserRouter([
   {
@@ -12,6 +14,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+
         element: (
           <Typography component="h1">
             Google Maps and mapbox Example. 🏖️
@@ -21,6 +24,14 @@ const router = createBrowserRouter([
       {
         path: "google-maps",
         element: <GoogleMap />,
+      },
+      {
+        path: "google-maps-heatmap",
+        element: <GoogleMapHeatmap />,
+      },
+      {
+        path: "google-maps/clear",
+        element: <GoogleMapClear />,
       },
       {
         path: "mapbox",

@@ -2,7 +2,7 @@ import { AppBar, Box, CssBaseline, Link, Toolbar } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { Link as RouteLink } from "react-router-dom";
 
-const navItems = ["Google Maps", "mapbox"];
+const navItems = ["Google Maps", "Google Maps Heatmap", "mapbox"];
 
 function Layout() {
   return (
@@ -12,10 +12,14 @@ function Layout() {
         <AppBar position="static">
           <Toolbar>
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              {navItems.map((item) => (
+              {navItems.map((item, index) => (
                 <Link
                   component={RouteLink}
-                  to={item.toLocaleLowerCase().replace(" ", "-")}
+                  to={
+                    index === 0
+                      ? "google-maps/clear"
+                      : item.toLocaleLowerCase().replaceAll(" ", "-")
+                  }
                   key={item}
                   sx={{
                     color: "#fff",

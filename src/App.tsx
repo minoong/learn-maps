@@ -14,7 +14,7 @@ const router = createBrowserRouter([
         path: "/",
         element: (
           <Typography component="h1">
-            Google Maps and mapbox deep dive 🏖️
+            Google Maps and mapbox Example. 🏖️
           </Typography>
         ),
       },

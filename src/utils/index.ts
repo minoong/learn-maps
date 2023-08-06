@@ -68,28 +68,36 @@ export function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export default function svgToImageUrl(svgComponent: React.ReactElement) {
+export function svgToImageUrl(svgComponent: React.ReactElement) {
   return new Promise<string>((resolve, reject) => {
     const svg = renderToString(svgComponent);
-    const blob = new Blob([svg], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob);
     const image = new Image();
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
 
-    image.src = url;
     image.onload = () => {
+      const canvas = document.createElement("canvas");
       canvas.width = image.width;
       canvas.height = image.height;
-      context?.drawImage(image, 0, 0);
-      resolve(canvas.toDataURL());
-      canvas.remove();
-      URL.revokeObjectURL(url);
+      const context = canvas.getContext("2d");
+
+      if (context) {
+        context.drawImage(image, 0, 0);
+
+        try {
+          const dataUrl = canvas.toDataURL();
+          resolve(dataUrl);
+        } catch (error) {
+          reject(error);
+        }
+      } else {
+        reject(new Error("캔버스 컨텍스트를 사용할 수 없습니다."));
+      }
     };
+
     image.onerror = () => {
-      reject();
-      canvas.remove();
-      URL.revokeObjectURL(url);
+      reject(new Error("SVG 이미지를 로드하지 못했습니다."));
     };
+
+    const encodedSvg = encodeURIComponent(svg);
+    image.src = `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
   });
 }

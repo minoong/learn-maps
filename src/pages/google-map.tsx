@@ -1,43 +1,28 @@
-import React, { useCallback, useState } from "react";
-import BaseMap from "../components/google/map/BaseMap";
+import React, { memo } from "react";
 import { useJsApiLoader } from "@react-google-maps/api";
-import { useCurrentLocation } from "../hooks/useCurrentLocation";
-import { getRandomCoordinates } from "../utils";
-import BaseMarker from "../components/google/marker/BaseMarker";
-
-const GEN_MARKER = Array(20)
-  .fill(null)
-  .map(() => getRandomCoordinates("Guanak"));
+import { Container, Grid } from "@mui/material";
+import BasicExample from "../components/examples/google/BasicExample";
+import CustomMarkerExample from "../components/examples/google/CustomMarkerExample";
 
 function GoogleMap() {
-  const [center, setCenter] = useState<google.maps.LatLngLiteral>(
-    getRandomCoordinates("Guro")
-  );
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     language: "ko",
   });
 
-  useCurrentLocation(
-    useCallback(({ lat, lng }) => {
-      setCenter({ lat, lng });
-    }, [])
-  );
-
   return (
-    <>
-      {isLoaded ? (
-        <BaseMap zoom={13} center={center} onClick={console.log}>
-          {GEN_MARKER.map((pos, index) => (
-            <BaseMarker key={JSON.stringify(pos) + index} position={pos} />
-          ))}
-        </BaseMap>
-      ) : (
-        <div>loading... 🚀</div>
-      )}
-    </>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={8} lg={9}>
+          {isLoaded ? <BasicExample /> : <div>loading... 🚀</div>}
+        </Grid>
+        <Grid item xs={12} md={8} lg={9}>
+          {isLoaded ? <CustomMarkerExample /> : <div>loading... 🚀</div>}
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
 
-export default GoogleMap;
+export default memo(GoogleMap);

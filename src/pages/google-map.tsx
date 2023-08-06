@@ -3,6 +3,7 @@ import { useJsApiLoader } from "@react-google-maps/api";
 import { Container, Grid } from "@mui/material";
 import BasicExample from "../components/examples/google/BasicExample";
 import CustomMarkerExample from "../components/examples/google/CustomMarkerExample";
+import ClusterCustomMarkerExample from "../components/examples/google/ClusterCustomMarkerExample";
 
 function GoogleMap() {
   const { isLoaded } = useJsApiLoader({
@@ -19,6 +20,9 @@ function GoogleMap() {
         </Grid>
         <Grid item xs={12} md={8} lg={9}>
           {isLoaded ? <CustomMarkerExample /> : <div>loading... 🚀</div>}
+        </Grid>
+        <Grid item xs={12} md={8} lg={9}>
+          {isLoaded ? <ClusterCustomMarkerExample /> : <div>loading... 🚀</div>}
         </Grid>
       </Grid>
     </Container>

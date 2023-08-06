@@ -21,7 +21,7 @@ export const postData = atom(async (get) => {
 
   await delay(500);
 
-  const data = Array(200)
+  const data = Array(100)
     .fill(null)
     .map((_, i) => {
       const id = "#" + String(i).padStart(5, "0");

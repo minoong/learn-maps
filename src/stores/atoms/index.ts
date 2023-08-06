@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import "@react-google-maps/api";
 import { CustomMarker } from "../../types";
-import svgToImageUrl, {
+import {
   delay,
   getRandomBoolean,
   getRandomCoordinates,
@@ -9,6 +9,8 @@ import svgToImageUrl, {
   getRandomInt,
 } from "../../utils";
 import MarkerSVG from "../../components/marker/GroupMarker";
+import { renderToString } from "react-dom/server";
+import SvgToImageUrlWorker from "../../utils/svgToImageUrlWorker?worker";
 
 export const googleMapAtom = atom<google.maps.Map | null>(null);
 export const googleMarkersAtom = atom<{
@@ -21,7 +23,7 @@ export const postData = atom(async (get) => {
 
   await delay(500);
 
-  const data = Array(100)
+  const data = Array(200)
     .fill(null)
     .map((_, i) => {
       const id = "#" + String(i).padStart(5, "0");
@@ -34,7 +36,7 @@ export const postData = atom(async (get) => {
       const { lat, lng } = getRandomCoordinates("Guanak");
 
       return Promise.all([
-        svgToImageUrl(
+        svgToImageUrlWithWebWorker(
           MarkerSVG({
             badgeText,
             text,
@@ -44,7 +46,7 @@ export const postData = atom(async (get) => {
             isBadge,
           })
         ),
-        svgToImageUrl(
+        svgToImageUrlWithWebWorker(
           MarkerSVG({
             badgeText,
             text,
@@ -55,6 +57,8 @@ export const postData = atom(async (get) => {
           })
         ),
       ]).then((urls) => {
+        console.log("urls", urls);
+
         return {
           id,
           badgeText,
@@ -103,3 +107,22 @@ export const updateMarkerPositionAtom = atom(
     set(customMarkerAtom, result);
   }
 );
+
+function svgToImageUrlWithWebWorker(svgComponent: React.ReactElement) {
+  const svgToImageUrlWorker = new SvgToImageUrlWorker();
+  const svg = renderToString(svgComponent);
+
+  svgToImageUrlWorker.postMessage(svg);
+  return new Promise<string>((resolve, reject) => {
+    svgToImageUrlWorker.onmessage = (event: MessageEvent) => {
+      const { imageData } = event.data;
+
+      svgToImageUrlWorker.terminate();
+
+      resolve(imageData);
+    };
+    svgToImageUrlWorker.onerror = (error) => {
+      reject(error);
+    };
+  });
+}
